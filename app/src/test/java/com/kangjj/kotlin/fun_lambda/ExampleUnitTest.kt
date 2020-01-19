@@ -386,4 +386,41 @@ class ExampleUnitTest {
             return
         })
     }
+
+    /**
+     * 捕获上下文中的变量和常量
+     * 可以访问或修改其上下文（俗称“闭包）中的变量和常量，这个过程被称为捕获
+     *
+     * Lambda表达式或匿名函数都会持有一个其所捕获的变量副本，因此表面上看addElement()访问的是makeList()
+     * 函数的List集合变量，但只要程序返回一个新的addElement()函数，addElement函数就会自己持有一个新的list
+     * 副本。如下所示：
+     */
+    @Test
+    fun captureVariables(){
+        println("*******************add1返回的List******************")
+        val add1 = makeList("孙悟空")
+        println(add1())
+        println(add1())
+        println("*******************add2返回的List******************")
+        val add2 = makeList("猪八戒")
+        println(add2())
+        println(add2())
+        /**
+            *******************add1返回的List******************
+            [孙悟空]
+            [孙悟空, 孙悟空]
+            *******************add2返回的List******************
+            [猪八戒]
+            [猪八戒, 猪八戒]
+         */
+    }
+
+    fun makeList(ele:String):()->List<String>{
+        var list:MutableList<String> = mutableListOf()
+        fun addElement():List<String>{
+            list.add(ele)
+            return list
+        }
+        return ::addElement
+    }
 }
